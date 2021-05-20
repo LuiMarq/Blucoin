@@ -1,30 +1,43 @@
 const { Blockchain, Transaction } = require("./blockchain");
+const EC = require("elliptic").ec;
+const ec = new EC("secp256k1");
+
+const myKey = ec.keyFromPrivate(
+	"f7fc47d4d091b02d4112f91127688aef428e893aca33ea11ca259bc095425ab0"
+);
+const myWalletAddress = myKey.getPublic("hex");
 
 // Create a new instance of the Blockchain class
 let luCoin = new Blockchain();
 
-// Create first transaction
-luCoin.createTransaction(new Transaction("address1", "address2", 100));
-
-// Create second transaction
-luCoin.createTransaction(new Transaction("address2", "address1", 60));
+const tx1 = new Transaction(
+	myWalletAddress,
+	"public key of transaction receiver",
+	10
+);
+tx1.signTransaction(myKey);
+luCoin.addTransaction(tx1);
 
 // Mine block
 console.log("\nStarting the miner...");
-luCoin.minePendingTransactions("mine-addrress");
+luCoin.minePendingTransactions(myWalletAddress);
 console.log(
-	`\nBalance of mine-addrress: ${luCoin.getBalanceOfAddress("mine-addrress")}`
+	`\nBalance of miner-addrress: ${luCoin.getBalanceOfAddress(
+		myWalletAddress
+	)}`
 );
 
 // Mine block of the reward transaction
-console.log("\nStarting the miner again...");
-luCoin.minePendingTransactions("mine-addrress");
+console.log("\nStarting the   again...");
+luCoin.minePendingTransactions(myWalletAddress);
 console.log(
-	`\nBalance of mine-addrress: ${luCoin.getBalanceOfAddress("mine-addrress")}`
+	`\nBalance of miner-addrress: ${luCoin.getBalanceOfAddress(
+		myWalletAddress
+	)}`
 );
 
 // Test of tempering with the chain
-// luCoin.chain[1].transactions[0].amount = 9999;
+luCoin.chain[1].transactions[0].amount = 9999;
 
 // Check if the chain is valid
 console.log("\nBlockchain valid?", luCoin.isChainValid() ? "Yes" : "No");

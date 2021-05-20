@@ -1,4 +1,6 @@
 const SHA256 = require("crypto-js/sha256");
+const EC = require("elliptic").ec;
+const ec = new EC("secp256k1");
 
 class Transaction {
 	constructor(fromAddress, toAddress, amount) {
@@ -6,7 +8,37 @@ class Transaction {
 		this.toAddress = toAddress;
 		this.amount = amount;
 	}
+
+	calculateHash() {
+		return SHA256(
+			this.fromAddress + this.toAddress + this.amount
+		).toString();
+	}
+
+	signTransaction(signingKey) {
+		if (signingKey.getPublic("hex") !== this.fromAddress) {
+			throw new Error.toString(
+				"You cannot sign transactions for other wallets"
+			);
+		}
+
+		const hashTx = this.calculateHash();
+		const sig = signingKey.sign(hashTx, "base64");
+		this.signature = sig.toDER("hex");
+	}
+
+	isValid() {
+		if (this.fromAddress === null) return true;
+
+		if (!this.signature || this.signature.length === 0) {
+			throw new Error("No signature in this transaction");
+		}
+
+		const publicKey = ec.keyFromPublic(this.fromAddress, "hex");
+		return publicKey.verify(this.calculateHash(), this.signature);
+	}
 }
+
 class Block {
 	constructor(timestamp, transactions, previousHash = "") {
 		this.previousHash = previousHash;
@@ -35,6 +67,14 @@ class Block {
 		}
 
 		console.log("Block mined: " + this.hash);
+	}
+
+	hasValidTransactions() {
+		for (const tx of this.transactions) {
+			if (!tx.isValid()) return false;
+		}
+
+		return true;
 	}
 }
 
@@ -70,7 +110,15 @@ class Blockchain {
 		];
 	}
 
-	createTransaction(transaction) {
+	addTransaction(transaction) {
+		if (!transaction.fromAddress || !transaction.toAddress) {
+			throw new Error("Transaction must include to and from address");
+		}
+
+		if (!transaction.isValid()) {
+			throw new Error("Cannot add invalid transaction to the chain");
+		}
+
 		this.pendingTransactions.push(transaction);
 	}
 
@@ -96,6 +144,10 @@ class Blockchain {
 		for (let i = 1; i < this.chain.length; i++) {
 			const currentBlock = this.chain[i];
 			const previousBlock = this.chain[i - 1];
+
+			if (!currentBlock.hasValidTransactions()) {
+				return false;
+			}
 
 			if (currentBlock.hash !== currentBlock.calculateHash()) {
 				return false;
