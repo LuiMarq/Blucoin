@@ -1,0 +1,8 @@
+{
+    "requires": true,
+    "lockfileVersion": 1,
+    "dependencies": {
+        "crypto-js": "^4.0.0",
+        "elliptic": "^6.5.4"
+    }
+}
