@@ -1,8 +1,30 @@
 {
-    "requires": true,
-    "lockfileVersion": 1,
-    "dependencies": {
-        "crypto-js": "^4.0.0",
-        "elliptic": "^6.5.4"
-    }
+  "requires": true,
+  "lockfileVersion": 1,
+  "dependencies": {
+    "crypto-js": "^4.0.0",
+    "elliptic": "^6.5.4"
+  },
+  "name": "blucoin",
+  "description": "Simple proof of concept in JavaScript based on curiosity of how cryptocurrencies work.",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m-arques/Blucoin.git"
+  },
+  "keywords": [
+    "criptocurrency",
+    "cripto",
+    "currency"
+  ],
+  "author": "Luís Marques",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/m-arques/Blucoin/issues"
+  },
+  "homepage": "https://github.com/m-arques/Blucoin#readme"
 }
