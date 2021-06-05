@@ -37,7 +37,7 @@ console.log(
 );
 
 // Test of tempering with the chain
-luCoin.chain[1].transactions[0].amount = 9999;
+// luCoin.chain[1].transactions[0].amount = 9999;
 
 // Check if the chain is valid
 console.log("\nBlockchain valid?", luCoin.isChainValid() ? "Yes" : "No");
