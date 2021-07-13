@@ -3,7 +3,7 @@ Simple proof of concept in JavaScript based on curiosity of how cryptocurrencies
 
 ### Install library
 ```
-npm install --save github:m-arques/Blucoin
+npm install --save github:luismarques-io/Blucoin
 ```
 
 ### Run example
